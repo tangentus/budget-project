@@ -32,14 +32,14 @@ development:
         #     - use: web
 
         # The name of the user for authentication.
-        # user: 'user'
+         user: 'root'
 
         # The password of the user for authentication.
-        # password: 'password'
+         password: 'toor'
 
         # The user's database roles.
-        # roles:
-        #   - 'dbOwner'
+         roles:
+           - 'dbOwner'
 
         # Change the default authentication mechanism. Valid options are: :scram,
         # :mongodb_cr, :mongodb_x509, and :plain. Note that all authentication

@@ -8,3 +8,4 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: toor
     ports:
       - "27018:27018"
+    command: --port 27018
