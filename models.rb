@@ -1,3 +1,36 @@
+# Modeling v2
+
+class Transaction
+  attr_accessor :processed_at # the date the transaction appeared in the bank; may be nil if no bank transaction exists yet
+  attr_accessor :created_at # the date the transaction was tracked in-app
+  attr_accessor :type # can be :deposit or :withdrawal
+  attr_accessor :amount
+  attr_accessor :description
+  attr_accessor :split # [{allowance_id: BSON:ObjectId, allowance_amount: Money}] description of how the transaction is split between allowances; simple case is one element out of one budget
+  attr_accessor :balance # result balance of account after this transaction...should I do this?
+end
+
+class Allowance # embedded document
+  attr_accessor :planned
+
+  def spent; end
+  def left_to_spend; end
+  def transactions; end
+end
+
+# View a Budget
+budget_begin = Time.now # is some timestamp indicating the beginning of a budget period
+budget_end = Time.now # is some timestamp indicating the end of a budget period
+Transaction.where(created_at: {"$gte": budget_begin}, created_at: {"$lt": budget_end})
+
+# View allowances of a Budget
+# probably can use an $group stage in an aggregate to get total spent
+split_charges = Transaction.where(created_at: {"$gte": budget_begin}, created_at: {"$lt": budget_end})
+           .only(:split).pluck(:split)
+allowances = Allowance.where(id: {"$in": split_charges.pluck(:id)})
+# We could now combine info from split charges and allowances to display a run-down
+
+# Modeling v1
 class Transaction
   attr_accessor :processed_at # the date the transaction appeared in the bank; may be nil if no bank transaction exists yet
   attr_accessor :created_at # the date the transaction was tracked in-app
