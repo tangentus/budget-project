@@ -13,13 +13,13 @@ class Transaction
   field :description, type: String
   field :balance, type: Money
 
-  after_save :update_allowances
-  after_destroy :update_allowances
+  # after_save :update_allowances
+  # after_destroy :update_allowances
 
   # @todo add validation to ensure that when these exists, that there are _at least_ two of them
   embeds_many :splits, store_as: :split_charges
 
-  validates_inclusion_of :type, in: Types
+  validates_inclusion_of :type, in: TYPES.values.concat(TYPES.values.map(&:to_s))
 
   def income
     Transaction.current_budget.where(type: TYPES[:deposit]).only(:amount).pluck(:amount).sum
