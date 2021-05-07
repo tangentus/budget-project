@@ -24,14 +24,13 @@ class TransactionsController < ApplicationController
   def create
     @transaction = Transaction.new(transaction_params)
 
+    render_errors and return unless @transaction.save
+
+    @transaction.splits.create(split_charges_params)
+
     respond_to do |format|
-      if @transaction.save
-        format.html { redirect_to @transaction, notice: "Transaction was successfully created." }
-        format.json { render :show, status: :created, location: @transaction }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @transaction.errors, status: :unprocessable_entity }
-      end
+      format.html { redirect_to @transaction, notice: "Transaction was successfully created." }
+      format.json { render :show, status: :created, location: @transaction }
     end
   end
 
@@ -69,5 +68,13 @@ class TransactionsController < ApplicationController
     end
 
     def split_charges_params
+      params[:transaction].require(:transaction_split).permit(:allowance, :amount)
+    end
+
+    def render_errors
+      respond_to do |format|
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @transaction.errors, status: :unprocessable_entity }
+      end
     end
 end
