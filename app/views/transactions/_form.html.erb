@@ -17,6 +17,8 @@
   <%= form.label :amount, "Transaction Amount:" %>
   <%= form.number_field :amount, in: 0.0..1000000.0 %>
 
+  <%= render partial: "split_form", locals: { form: form, split: @split} %>
+
   <%= form.label :description, "Transaction Description:" %>
   <%= form.text_field :description %>
 

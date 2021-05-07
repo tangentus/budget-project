@@ -13,6 +13,7 @@ class TransactionsController < ApplicationController
   # GET /transactions/new
   def new
     @transaction = Transaction.new
+    @split = @transaction.splits.new
   end
 
   # GET /transactions/1/edit
@@ -65,5 +66,8 @@ class TransactionsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def transaction_params
       params[:transaction].permit(:type, :amount, :description, :processed_at)
+    end
+
+    def split_charges_params
     end
 end

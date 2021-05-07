@@ -30,6 +30,15 @@ split_charges = Transaction.where(created_at: {"$gte": budget_begin}, created_at
 allowances = Allowance.where(id: {"$in": split_charges.pluck(:id)})
 # We could now combine info from split charges and allowances to display a run-down
 
+
+
+
+
+
+
+
+
+
 # Modeling v1
 class Transaction
   attr_accessor :processed_at # the date the transaction appeared in the bank; may be nil if no bank transaction exists yet

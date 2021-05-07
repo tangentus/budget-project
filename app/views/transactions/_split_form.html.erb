@@ -1,0 +1,7 @@
+<%= form.fields_for split do |split_form| %>
+  <%= split_form.label :allowance, "Allowance Name:"  %>
+  <%= split_form.select :allowance, allowance_types %>
+
+  <%= split_form.label :amount, "Amount:" %>
+  <%= split_form.number_field :amount, in: 0.0..1000000.0 %>
+<% end %>

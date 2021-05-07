@@ -43,27 +43,37 @@ class Transaction
 
   def update_allowances
     Mongoid::QueryCache.enabled = true
-    Allowance.current_budget.each do |allowance|
-      result = collection.aggregate([
-                                      {
-                                        "$match": {
-                                          "split.allowance_id": id,
-                                          created_at: {"$gte": current_budget.begin, "lt": current_budget.end}
+    impacted_allowances = split_charges.pluck(:allowance_id)
+    result = collection.aggregate([
+                                    {
+                                      "$match": {
+                                        "split.allowance_id": impacted_allowances,
+                                        created_at: {"$gte": current_budget.begin, "lt": current_budget.end}
+                                      }
+                                    },
+                                    {
+                                      "$group": {
+                                        _id: "split.allowance_id",
+                                        spent: {
+                                          "$sum": "split.allowance_amount"
                                         }
-                                      },
+                                      }
+                                    }
+                                  ])
+    Allowance.collection.bulk_write([
                                       {
-                                        "$group": {
-                                          _id: "split.allowance_id",
-                                          spent: {
-                                            "$sum": "split.allowance_amount"
+                                        "update_many": {
+                                          filter: {
+                                            id: {"$in": impacted_allowances}
+                                          },
+                                          update: {
+                                            "$set": {
+                                              spent: result[:spent]
+                                            }
                                           }
                                         }
                                       }
                                     ])
-
-      allowance.update(spent: result[:spent])
-    end
-
     Mongoid::QueryCache.enabled = false
 
     true

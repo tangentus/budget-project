@@ -1,0 +1,1 @@
+Mongoid::Migrator.migrations_path = ["db/data_migrations"]
