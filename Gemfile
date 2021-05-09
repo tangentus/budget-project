@@ -34,3 +34,4 @@ gem "mongoid", "~> 7.2"
 gem "webpacker", "~> 5.3"
 
 gem "money", "~> 6.14"
+gem "turbo-rails", "~> 0.5.9"
