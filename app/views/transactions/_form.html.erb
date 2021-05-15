@@ -11,6 +11,22 @@
     </div>
   <% end %>
 
+  <%= form.label :type, "Transaction Type:" %>
+  <%= form.select :type, Transaction::TYPES.map {|key, type| [key.capitalize, type]} %>
+
+  <%= form.label :amount, "Transaction Amount:" %>
+  <%= form.number_field :amount, in: 0.0..1000000.0 %>
+
+  <% splits.each do |split| %>
+    <%= render partial: "split_form", locals: { form: form, split: split} %>
+  <% end %>
+
+  <%= form.label :description, "Transaction Description:" %>
+  <%= form.text_field :description %>
+
+  <%= form.label :processed_at, "Processed in USAA:" %>
+  <%= form.datetime_local_field :processed_at %>
+
   <div class="actions">
     <%= form.submit %>
   </div>

@@ -31,5 +31,7 @@ module BudgetProject
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    Mongoid::Migrator.migrations_path = ["db/data_migrations"]
   end
 end
