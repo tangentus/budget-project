@@ -3,7 +3,11 @@
 <p>
   Amount: <%= @transaction.amount %><br/>
   Type: <%= @transaction.type %> <br/>
-  Description: <%= @transaction.description %>
+  Description: <%= @transaction.description %><br/>
+  Splits: <% splits.each do |split| %><br/>
+  Allowance: <%= allowance_name(split.allowance) %><br/>
+  - Amount: <%= split.amount %><br/>
+  <% end %>
 </p>
 
 <%= link_to 'Edit', edit_transaction_path(@transaction) %> |

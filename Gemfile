@@ -34,6 +34,4 @@ gem "mongoid", "~> 7.2"
 
 gem "webpacker", "~> 5.3"
 
-gem "money", "~> 6.14"
-
 gem "money-rails", "~> 1.7"
