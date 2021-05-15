@@ -8,6 +8,7 @@ class Transaction
   include Mongoid::Timestamps
 
   field :processed_at, type: DateTime
+  field :transaction_date, type: DateTime, default: DateTime.now
   field :type, type: String
   field :amount, type: Money
   field :description, type: String

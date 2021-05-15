@@ -1,0 +1,12 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  Name: <%= budget.name %><br/>
+  Start Date: <%= budget.start_date %> <br/>
+  End Date: <%= budget.end_date %> <br/>
+  <%= render "transactions", budget: budget, transactions: budget.transactions %>
+
+</p>
+
+<%= link_to 'Edit', edit_budget_path(budget) %> |
+<%= link_to 'Back', budgets_path %>
