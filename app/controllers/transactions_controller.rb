@@ -30,7 +30,7 @@ class TransactionsController < ApplicationController
 
     render_errors and return unless transaction.save
 
-    transaction.splits.create(split_charges_params)
+    transaction.splits.create(split_params)
 
     respond_to do |format|
       format.html { redirect_to transaction, notice: "Transaction was successfully created." }
@@ -41,7 +41,7 @@ class TransactionsController < ApplicationController
   # PATCH/PUT /transactions/1 or /transactions/1.json
   def update
     transaction_saved = transaction.update(transaction_params)
-    splits_saved = transaction.splits.first.update(split_charges_params) if transaction_saved
+    splits_saved = transaction.splits.first.update(split_params) if transaction_saved
 
     respond_to do |format|
       if transaction_saved && splits_saved
@@ -75,7 +75,7 @@ class TransactionsController < ApplicationController
       params[:transaction].permit(:type, :amount, :description, :processed_at)
     end
 
-    def split_charges_params
+    def split_params
       params[:transaction].require(:transaction_split).permit(:allowance, :amount)
     end
 

@@ -17,7 +17,7 @@ class Transaction
   # after_destroy :update_allowances
 
   # @todo add validation to ensure that when these exists, that there are _at least_ two of them
-  embeds_many :splits, store_as: :split_charges
+  embeds_many :splits
 
   validates_inclusion_of :type, in: TYPES.values.concat(TYPES.values.map(&:to_s))
 
@@ -43,7 +43,7 @@ class Transaction
 
   def update_allowances
     Mongoid::QueryCache.enabled = true
-    impacted_allowances = split_charges.pluck(:allowance_id)
+    impacted_allowances = splits.pluck(:allowance_id)
     result = collection.aggregate([
                                     {
                                       "$match": {
