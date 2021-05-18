@@ -44,19 +44,19 @@ class Transaction
 
   def update_allowances
     Mongoid::QueryCache.enabled = true
-    impacted_allowances = splits.pluck(:allowance_id)
+    impacted_allowances = splits.pluck(:allowance)
     result = collection.aggregate([
                                     {
                                       "$match": {
-                                        "split.allowance_id": impacted_allowances,
+                                        "split.allowance": impacted_allowances,
                                         created_at: {"$gte": current_budget.begin, "lt": current_budget.end}
                                       }
                                     },
                                     {
                                       "$group": {
-                                        _id: "split.allowance_id",
+                                        _id: "split.allowance",
                                         spent: {
-                                          "$sum": "split.allowance_amount"
+                                          "$sum": "split.amount"
                                         }
                                       }
                                     }
