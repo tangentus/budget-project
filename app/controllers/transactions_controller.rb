@@ -76,7 +76,7 @@ class TransactionsController < ApplicationController
     end
 
     def split_params
-      params[:transaction].permit(:transaction_split).permit(:allowance, :amount)
+      params.require(:transaction).require(:transaction_split).permit(:allowance, :amount)
     end
 
     def render_errors
