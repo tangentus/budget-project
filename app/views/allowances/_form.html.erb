@@ -1,0 +1,38 @@
+<%= form_with(model: allowance, local: true) do |form| %>
+  <% if allowance.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(allowance.errors.count, "error") %> prohibited this allowance from being saved:</h2>
+
+      <ul>
+        <% allowance.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form.label :name, "Name:" %>
+  <%= form.text_field :name %>
+
+  <%= form.label :starting_amount, "Starting Amount:" %>
+  <%= form.number_field :starting_amount, in: 0.0..1000000.0 %>
+
+  <%= form.label :planned, "Planned:" %>
+  <%= form.number_field :planned, in: 0.0..1000000.0 %>
+
+  <%= form.label :spent, "Spent:" %>
+  <%= form.number_field :spent, in: 0.0..1000000.0 %>
+
+  <%= form.label :name, "Category:" %>
+  <%= form.text_field :category %>
+
+  <%= form.label :start_date, "Start Date:" %>
+  <%= form.datetime_local_field :start_date %>
+
+  <%= form.label :end_date, "End Date:" %>
+  <%= form.datetime_local_field :end_date %>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
