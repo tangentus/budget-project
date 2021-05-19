@@ -16,7 +16,6 @@ class AllowancesController < ApplicationController
   # GET /allowances/new
   def new
     @allowance = Allowance.new
-    @splits = [allowance.splits.new]
   end
 
   def create
@@ -63,6 +62,13 @@ class AllowancesController < ApplicationController
   end
 
   def allowance_params
-    params.require(:allowance).permit(:name, :starting_amount, :planned, :category, :start_date, :end_date)
+    params.require(:allowance).permit(:name, :starting_amount, :planned, :category).merge(budget_params)
+  end
+
+  def budget_params
+    budget_params = params.require(:allowance).permit(:budget)
+    budget = Budget.find(budget_params[:budget])
+
+    { start_date: budget.start_date, end_date: budget.end_date }
   end
 end

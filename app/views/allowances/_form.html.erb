@@ -26,11 +26,8 @@
   <%= form.label :name, "Category:" %>
   <%= form.text_field :category %>
 
-  <%= form.label :start_date, "Start Date:" %>
-  <%= form.datetime_local_field :start_date %>
-
-  <%= form.label :end_date, "End Date:" %>
-  <%= form.datetime_local_field :end_date %>
+  <%= form.label :budget, "Budget:" %>
+  <%= form.select :budget, budget_options %>
 
   <div class="actions">
     <%= form.submit %>
