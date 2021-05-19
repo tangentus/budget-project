@@ -8,7 +8,7 @@
   Category: <%= allowance.category %> <br/>
   Start Date: <%= allowance.start_date %> <br/>
   End Date: <%= allowance.end_date %> <br/>
-
+  <%= render "transactions", allowance: allowance, transactions: allowance.transactions %>
 </p>
 
 <%= link_to 'Edit', edit_allowance_path(allowance) %> |

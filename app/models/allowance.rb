@@ -23,6 +23,11 @@ class Allowance
   # to beginning of month to end of month.
   def transactions
     # @todo a scope that eases querying for transactions in a particular budget
-    Transaction.current_budget.where("split.allowance_id": id)
+    Transaction.where(
+      "$and": [
+        transaction_date: { "$gte": start_date },
+        transaction_date: { "$lte": end_date },
+      ]
+    )
   end
 end
