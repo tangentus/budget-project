@@ -14,8 +14,8 @@ class Transaction
   field :description, type: String
   field :balance, type: Money
 
-  # after_save :update_allowances
-  # after_destroy :update_allowances
+  after_save :update_allowances
+  after_destroy :update_allowances
 
   # @todo add validation to ensure that when these exists, that there are _at least_ two of them
   embeds_many :splits
@@ -43,39 +43,59 @@ class Transaction
   private
 
   def update_allowances
-    Mongoid::QueryCache.enabled = true
+    # Mongoid::QueryCache.enabled = true
+
     impacted_allowances = splits.pluck(:allowance)
     result = collection.aggregate([
                                     {
                                       "$match": {
-                                        "split.allowance": impacted_allowances,
-                                        created_at: {"$gte": current_budget.begin, "lt": current_budget.end}
+                                        "splits.allowance": { "$in": impacted_allowances },
+                                        "$and": [
+                                          # {transaction_date: {"$gte": Budget.current_budget.start_date}},
+                                          # {transaction_date: {"$lte": Budget.current_budget.end_date}}
+                                          # overridden to explicit times until the budget selection can be modified
+                                          {transaction_date: {"$gte": DateTime.parse("Tue, 11 May 2021 00:34:00 +0000")}},
+                                          {transaction_date: {"$lte": DateTime.parse("Wed, 30 Jun 2021 00:34:00 +0000")}}
+                                        ],
+                                        type: TYPES[:withdrawal]
                                       }
                                     },
                                     {
+                                      "$unwind": "$splits"
+                                    },
+                                    {
                                       "$group": {
-                                        _id: "split.allowance",
+                                        _id: "$splits.allowance",
                                         spent: {
-                                          "$sum": "split.amount"
+                                          "$sum": "$splits.amount.cents"
                                         }
                                       }
                                     }
                                   ])
-    Allowance.collection.bulk_write([
-                                      {
-                                        "update_many": {
-                                          filter: {
-                                            id: {"$in": impacted_allowances}
-                                          },
-                                          update: {
-                                            "$set": {
-                                              spent: result[:spent]
-                                            }
-                                          }
-                                        }
-                                      }
-                                    ])
-    Mongoid::QueryCache.enabled = false
+    aggregates = []
+
+    result.each do |doc|
+      Allowance.find(doc[:_id]).update(spent: Monetize.from_float(doc[:spent]))
+      # aggregates << {
+      #   update_one: {
+      #     filter: {
+      #       id: doc[:_id]
+      #     },
+      #     update: {
+      #       "$set": {
+      #         spent: {
+      #           cents: doc[:spent].to_i.to_s,
+      #           currency_iso: "USD"
+      #         }
+      #       }
+      #     }
+      #   }
+      # }
+    end
+
+    # Allowance.collection.bulk_write(aggregates)
+
+    # Mongoid::QueryCache.enabled = false
 
     true
   end

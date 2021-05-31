@@ -2,6 +2,8 @@ class Budget
   include Mongoid::Document
   include Mongoid::Timestamps
 
+  include Currentable
+
   field :name, type: String
   field :start_date, type: DateTime
   field :end_date, type: DateTime

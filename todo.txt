@@ -1,0 +1,2 @@
+- Figure out why the spent field is coming back in the wrong decimal format 
+- Finish model validation
